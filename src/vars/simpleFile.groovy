@@ -1,11 +1,8 @@
 def call() {
     pipeline {
     agent any
-    tools {
-        maven 'MAVEN_4.0.0'
-    }
     options {
-        timeout (time:1, unit: 'HOURS')
+        timeout (time:1, unit:'HOURS')
     }
     triggers {
         pollSCM ('* * * * *')
@@ -13,19 +10,16 @@ def call() {
     stages {
         stage ('SCM') {
             steps {
-                git url: 'https://github.com/AmrutAnkalagi/spring-petclinic-jenkin.git',
-                    branch: 'main'
-            }   
+                git url: 'https://github.com/AmrutAnkalagi/nopCommerce_13Apr2025.git',
+                    branch: 'develop'
+            }    
         }
-        stage ('Build and Package') {
+        stage ('Build and publish') {
             steps {
-                sh 'mvn clean package'
-                
+                sh 'dotnet build -c Release src/Presentation/Nop.Web/Nop.Web.csproj'
+                sh 'mkdir published && dotnet publish -c Release -o published/ src/Presentation/Nop.Web/Nop.Web.csproj'
             }
-                
         }
-           
-
     }
 }
 }
